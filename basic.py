@@ -341,7 +341,6 @@ class Parser:
 
         return res.success(left)
 
-
 ######################
 # RunTime Result
 ######################
@@ -372,8 +371,8 @@ class RTResult:
 class Number:
     def __init__(self, value):
         self.value = value
-        self.set_pos(None, None)  # Provide default arguments for set_pos
-        self.set_context(None)    # Provide default argument for set_context
+        self.set_pos(None, None)
+        self.set_context(None)
     
     def set_pos(self, pos_start=None, pos_end=None):
         self.pos_start = pos_start
@@ -413,7 +412,6 @@ class Number:
     def __repr__(self):
         return str(self.value)
 
-
 ######################
 # Context
 ######################    
@@ -443,7 +441,6 @@ class Interpreter:
             Number(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
 
-
     def visit_BinOpNode(self, node, context):
         res = RTResult()
         left = res.register(self.visit(node.left_node, context))
@@ -460,7 +457,6 @@ class Interpreter:
             result, error = left.divided_by(right)
         elif node.op_tok.type == TT_POW:
             result, error = left.powed_by(right)
-
 
         if error:
             return res.failure(error)
@@ -504,6 +500,5 @@ def run(fn, text):
     interpreter = Interpreter()
     context = Context('<program>')
     result = interpreter.visit(ast.node, context)
-
 
     return result.value, result.error
