@@ -121,7 +121,11 @@ KEYWORDS        = [
                     'IF',
                     'THEN',
                     'ELIF',
-                    'ELSE'
+                    'ELSE',
+                    'YADI',
+                    'TADA',
+                    'ANYE',
+                    'ANYATHA'
                   ]
 
 class Token:
@@ -407,15 +411,15 @@ class Parser:
             ))
         return res
     
-    def if_expr(self):
+    def yadi_expr(self):
         res = ParseResult()
         cases = []
         else_case = None
 
-        if not self.current_tok.matches(TT_KEYWORD, 'IF'):
+        if not self.current_tok.matches(TT_KEYWORD, 'YADI'):
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
-                f"Expected 'IF'"
+                f"Expected 'YADI'"
             ))
 
         res.register_advancement()
@@ -424,10 +428,10 @@ class Parser:
         condition = res.register(self.expr())
         if res.error: return res
 
-        if not self.current_tok.matches(TT_KEYWORD, 'THEN'):
+        if not self.current_tok.matches(TT_KEYWORD, 'TADA'):
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
-                f"Expected 'THEN'"
+                f"Expected 'TADA'"
             ))
 
         res.register_advancement()
@@ -437,17 +441,17 @@ class Parser:
         if res.error: return res
         cases.append((condition, expr))
 
-        while self.current_tok.matches(TT_KEYWORD, 'ELIF'):
+        while self.current_tok.matches(TT_KEYWORD, 'ANYE'):
             res.register_advancement()
             self.advance()
 
             condition = res.register(self.expr())
             if res.error: return res
 
-            if not self.current_tok.matches(TT_KEYWORD, 'THEN'):
+            if not self.current_tok.matches(TT_KEYWORD, 'TADA'):
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"Expected 'THEN'"
+                    f"Expected 'TADA'"
                 ))
 
             res.register_advancement()
@@ -457,7 +461,7 @@ class Parser:
             if res.error: return res
             cases.append((condition, expr))
 
-        if self.current_tok.matches(TT_KEYWORD, 'ELSE'):
+        if self.current_tok.matches(TT_KEYWORD, 'ANYATHA'):
             res.register_advancement()
             self.advance()
 
@@ -495,10 +499,10 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Expected ')'"
                 ))
-        elif tok.matches(TT_KEYWORD, 'IF'):
-            if_expr = res.register(self.if_expr())
+        elif tok.matches(TT_KEYWORD, 'YADI'):
+            yadi_expr = res.register(self.yadi_expr())
             if res.error: return res
-            return res.success(if_expr)
+            return res.success(yadi_expr)
         
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end,
